@@ -19,26 +19,14 @@ def crate_db():
                    strikes TEXT ,
                    hyperlink TEXT ,
                    tag TEXT ,
-                   comments TEXT 
+                   comments TEXT, 
+                   deposit TEXT
                    );
                 """)
 
         print("База данных подключена к SQLite")
         cursor.execute(sqlite_create_table_query)
         sqlite_connection.commit()
-
-        # cursor = sqlite_connection.cursor()
-        # sqlite_create_table_query = ("""CREATE TABLE IF NOT EXISTS channel(
-        #                    uid INTEGER PRIMARY KEY AUTOINCREMENT,
-        #                    chat_name_telegram TEXT ,
-        #                    chat_name_slack TEXT
-        #                    );
-        #                 """)
-        #
-        # print("База данных подключена к SQLite")
-        # cursor.execute(sqlite_create_table_query)
-        # sqlite_connection.commit()
-        # print("Таблица SQLite создана")
         cursor.close()
 
     except sqlite3.Error as error:
@@ -47,6 +35,22 @@ def crate_db():
         if (sqlite_connection):
             sqlite_connection.close()
             print("Соединение с SQLite закрыто")
+#crate_db()
+
+# Обновления любого значения
+def sql_update(con,set,set_name,where,where_name):
+    cursorObj = con.cursor()
+    strs = 'UPDATE users SET '+str(set)+' = '+"'"+str(set_name)+"'"+' where '+str(where)  +' = '+ "'" +str(where_name)+ "'"
+    #'UPDATE users SET original_channel_name = "Rogers" where UID = 2'
+    print(strs)
+    cursorObj.execute(strs)
+    con.commit()
+
+# set = ("user_id")
+# set_name = ('TEST_UPDATE')
+# where = ('username')
+# where_name =('stasgrin01')
+# sql_update(con,set,set_name,where,where_name)
 
 def sql_insert_one(con, entitie):
     cursorObj = con.cursor()
@@ -64,36 +68,35 @@ def get_all(con):
     return alls
 
 
+
+
 #sql_insert_one(con,'1')
 def sql_insert_all(con, entities):
     cursorObj = con.cursor()
-    cursorObj.execute('INSERT INTO users (chat,user_id,username,real_name,name_of_agency,payid,strikes,hyperlink,tag,comments) VALUES(? ,? ,?, ?, ?,?,?,?,?,?)', entities)
+    cursorObj.execute('INSERT INTO users (chat,user_id,username,real_name,name_of_agency,payid,strikes,hyperlink,tag,comments,deposit) VALUES(? ,? ,?, ?, ?,?,?,?,?,?,?)', entities)
     con.commit()
 
+test=['chat','user_id','username','real_name','name_of_agency','payid','strikes','hyperlink','tag','comments','deposit']
 
-def sql_channel_name(con,name):
+#sql_insert_all(con,test)
+def sql_select_original_channel_name(con,id):
     cursorObj = con.cursor()
-    stre = ''.join(name)
-    query = "SELECT slack_channel_name FROM settings WHERE telegram_group_name = " + "'" + str(stre) + "'"  # +str(name)
-    print(query)
+    stre = ''.join(str(id))
+    query = "SELECT * FROM users WHERE uid = " + "'" + str(stre) + "'"  # +str(name)
+    #print(query)
     cursorObj.execute(query)
     values = cursorObj.fetchone()
-    print(values)
-    return values[0]
+    #print(values)
+    return values
 
-
-#print(get_all(con))
-#rows = get_all(con)
-# mes = ''
-# for row in rows:
-#     # print(row)
-#     mes + str(row)
-#     mes += '\n'
-#     print(mes)
-
-#print(sql_channel_name(con,'test_chat'))
-#crate_db()
-#test= ['Chat_name','ID1312312','USER_fdsfsdf','id_name_sdrwserwe','test','Chat_name','ID1312312','USER_fdsfsdf','id_name_sdrwserwe','test']
-#sql_insert_all(con,test)
-#crate_db()
+#sql_channel_name(con,ues)
+def sql_select_id(con,name):
+    cursorObj = con.cursor()
+    stre =''.join(name)
+    query="SELECT * FROM users WHERE username = "+ "'" +str(stre) + "'"  # +str(name)
+    #print(query)
+    cursorObj.execute(query)
+    values = cursorObj.fetchone()
+    user = sql_select_original_channel_name(con,values[0])
+    return user
 
