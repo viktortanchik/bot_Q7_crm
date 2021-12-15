@@ -44,15 +44,17 @@ def all_users():
     newrow = []
     #mes = ''
     for row in range(len(rows)):
-
+        #mes += '/'
+        # print(rows[row])
+        #mes += str(rows[row][3])
         newrow.append( '/'+rows[row][3])
     print("newrow >>> ",newrow)
     return newrow
 
 @dp.message_handler(content_types=["new_chat_members"])
 async def on_user_joined(message: types.Message):
-    #await message.delete()
-    data =[str(message.chat.title),'user_id',str(message['from'].username),'real_name','name_of_agency','payid','strikes','hyperlink','tag','notes','0']
+    await message.delete()
+    data =[str(message.chat.title),'user_id',str(message['from'].username),'real_name','name_of_agency','payid','strikes','hyperlink','tag','comments','0']
     sql_insert_all(con,data)
     await bot.send_message(674868256, "Hey!\n added new user\n Chat "+message.chat.title+'\n username '+message['from'].username)
     #rowsget_all(con)
@@ -62,15 +64,15 @@ async def on_user_joined(message: types.Message):
 async def process_start_command(message: types.Message):
     flag = admins(message['from'].id)
     if flag!=True:
-        #await message.delete()
+        await message.delete()
         await message.answer("this chat is not allowed to work with the bot " )
         print(message)
         print(message['from'].username)
     else:
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        buttons = ["Main menu"]
+        buttons = ["Main menu","ALL USER"]
         keyboard.add(*buttons)
-        await message.answer("ready for work", reply_markup=keyboard)
+        await message.answer("готов к работе", reply_markup=keyboard)
 
 newrows=[]
 genelamain =["Main menu"]
@@ -78,7 +80,7 @@ genelamain =["Main menu"]
 async def with_puree(message: types.Message):
     flag = admins(message['from'].id)
     if flag != True:
-        #await message.delete()
+        await message.delete()
         await message.answer("this chat is not allowed to work with the bot " )
     else:
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -91,11 +93,11 @@ equal=['Settings ⚙']
 async def settings(message: types.Message):
     flag = admins(message['from'].id)
     if flag != True:
-        #await message.delete()
+        await message.delete()
         await message.answer("this chat is not allowed to work with the bot " )
     else:
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        buttons = ["Main menu", "ALL ADMIN ⚙", "Add admin 🔧","Add super admin 🛠","Del user 🛠","Del admin 🛠"]
+        buttons = ["Main menu", "ALL ADMIN ⚙", "Add admin 🔧","Add super admin 🛠"]
         keyboard.add(*buttons)
         await message.answer("ready for work", reply_markup=keyboard)
 
@@ -105,7 +107,7 @@ equal=['Add admin 🔧']
 async def settings(message: types.Message):
     flag = super_admin(message['from'].id)
     if flag != True:
-        #await message.delete()
+        await message.delete()
         await message.answer("this chat is not allowed to work with the bot " )
     else:
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -118,7 +120,7 @@ equal=['Save admin 🔧']
 async def settings(message: types.Message):
     flag = super_admin(message['from'].id)
     if flag != True:
-        #await message.delete()
+        await message.delete()
         await message.answer("this chat is not allowed to work with the bot " )
     else:
         temps = open(str(message['from'].id) + "temp.txt", "r")
@@ -129,12 +131,14 @@ async def settings(message: types.Message):
         sql_insert_admins(con,temp)
         await message.answer("SAVE_ADMIN")
 
+
+
 equal=['ALL USER']
 @dp.message_handler(Text(equals=equal))
 async def with_puree(message: types.Message):
     flag = admins(message['from'].id)
     if flag != True:
-        #await message.delete()
+        await message.delete()
         await message.answer("this chat is not allowed to work with the bot " )
     else:
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -162,15 +166,15 @@ async def with_puree(message: types.Message):
     else:
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
         buttons = ['chat 🔎', 'user_id 🔎', 'username 🔎', 'real_name 🔎', 'name_of_agency 🔎', 'payid 🔎', 'strikes 🔎', 'hyperlink 🔎',
-                        'tag 🔎', 'notes 🔎', 'deposit 🔎',"Main menu"]
+                        'tag 🔎', 'comments 🔎', 'deposit 🔎',"Main menu"]
         keyboard.add(*buttons)
-        await message.answer("Find ", reply_markup=keyboard)
+        await message.answer("card ", reply_markup=keyboard)
 
 @dp.message_handler(Text(equals="chat 🔎"))
 async def find_chat(message: types.Message):
     flag = admins(message['from'].id)
     if flag != True:
-        #await message.delete()
+        await message.delete()
         await message.answer("this chat is not allowed to work with the bot " )
     else:
         chat_find = await find_all()
@@ -196,7 +200,7 @@ async def find_chat(message: types.Message):
 async def find_user_id(message: types.Message):
     flag = admins(message['from'].id)
     if flag != True:
-        #await message.delete()
+        await message.delete()
         await message.answer("this chat is not allowed to work with the bot " )
     else:
         chat_find = await find_all()
@@ -222,7 +226,7 @@ async def find_user_id(message: types.Message):
 async def find_username(message: types.Message):
     flag = admins(message['from'].id)
     if flag != True:
-        #await message.delete()
+        await message.delete()
         await message.answer("this chat is not allowed to work with the bot " )
     else:
         chat_find = await find_all()
@@ -248,7 +252,7 @@ async def find_username(message: types.Message):
 async def find_real_name(message: types.Message):
     flag = admins(message['from'].id)
     if flag != True:
-        #await message.delete()
+        await message.delete()
         await message.answer("this chat is not allowed to work with the bot " )
     else:
         chat_find = await find_all()
@@ -274,7 +278,7 @@ async def find_real_name(message: types.Message):
 async def find_name_of_agency(message: types.Message):
     flag = admins(message['from'].id)
     if flag != True:
-        #await message.delete()
+        await message.delete()
         await message.answer("this chat is not allowed to work with the bot " )
     else:
         chat_find = await find_all()
@@ -400,8 +404,8 @@ async def find_tag(message: types.Message):
         else:
             await message.answer("tag 🔎 " + mes)
 
-@dp.message_handler(Text(equals="notes 🔎"))
-async def find_notes(message: types.Message):
+@dp.message_handler(Text(equals="comments 🔎"))
+async def find_comments(message: types.Message):
     flag = admins(message['from'].id)
     if flag != True:
         await message.delete()
@@ -424,7 +428,7 @@ async def find_notes(message: types.Message):
         if find==0:
             await message.answer("Search did not return any result ❌")
         else:
-            await message.answer("notes 🔎 " + mes)
+            await message.answer("comments 🔎 " + mes)
 
 @dp.message_handler(Text(equals="deposit 🔎"))
 async def find_deposit(message: types.Message):
@@ -458,7 +462,7 @@ async def process_start_command(message: types.Message):
     if flag != True:
        pass
     else:
-        #await message.delete()
+        await message.delete()
 
         file = open(str(message['from'].id) + "temp.txt", "w")
         file.write(str(message.text))
@@ -478,7 +482,7 @@ async def process_start_command(message: types.Message):
             file.close()
             card = sql_select_id(con,s1)
             buttons =[]
-            name_buttons=['chat','user_id','username','real_name','name_of_agency','payid','strikes','hyperlink','tag','notes','deposit']
+            name_buttons=['chat','user_id','username','real_name','name_of_agency','payid','strikes','hyperlink','tag','comments','deposit']
             print('card>>>>>',card[11])
             lennames=0
             for i in card[1:]:
@@ -487,73 +491,11 @@ async def process_start_command(message: types.Message):
                 lennames+=1
             keyboard = types.InlineKeyboardMarkup(row_width=3)
             keyboard.add(*buttons)
-            await message.answer("card "+s1+'\n'+'chat '+card[1]+'\n'+'user_id '+card[2]+'\n'+'username '+card[3]+'\n'+'real_name '+card[4]+ '\n'+'name_of_agency '+card[5]+ '\n'+'payid '+card[6]+'\n'+'strikes '+card[7]+'\n'+'hyperlink '+card[8]+'\n'+'tag '+card[9]+'\n'+ 'notes '+card[10]+'\n'+'deposit '+card[11], reply_markup=keyboard) # test_pots_pip  -1001600149738   # test_chat -1001392919876
+            await message.answer("card "+s1+'\n'+'chat '+card[1]+'\n'+'user_id '+card[2]+'\n'+'username '+card[3]+'\n'+'real_name '+card[4]+ '\n'+'name_of_agency '+card[5]+ '\n'+'payid '+card[6]+'\n'+'strikes '+card[7]+'\n'+'hyperlink '+card[8]+'\n'+'tag '+card[9]+'\n'+ 'comments '+card[10]+'\n'+'deposit '+card[11], reply_markup=keyboard) # test_pots_pip  -1001600149738   # test_chat -1001392919876
 
-name_buttons = ['chat', 'user_id', 'username', 'real_name', 'name_of_agency', 'payid', 'strikes', 'hyperlink',
-                'notes', 'deposit']
+name_buttons = ['chat', 'user_id', 'username', 'real_name', 'name_of_agency', 'payid', 'strikes', 'hyperlink', 'tag',
+                'comments', 'deposit']
 
-@dp.callback_query_handler(text='tag')
-async def send_random_value(call: types.CallbackQuery):
-    print(call)
-    keyboard = types.InlineKeyboardMarkup(row_width=3)
-    tag_1 =types.InlineKeyboardButton(text='test_tag_1', callback_data='test_tag_1')
-    tag_2 =types.InlineKeyboardButton(text='test_tag_2', callback_data='test_tag_2')
-    tag_3 =types.InlineKeyboardButton(text='test_tag_3', callback_data='test_tag_3')
-    keyboard.add(tag_1,tag_2,tag_3)
-    await call.message.answer('change TAG',reply_markup=keyboard)
-
-@dp.callback_query_handler(text='test_tag_1')
-async def send_random_value(call: types.CallbackQuery):
-    users = open(str(call['from'].id) + "user.txt", "r")
-    user = users.read()
-    users.close()
-
-    print(call.data)
-    # temps = open(str(call['from'].id) + "temp.txt", "r")
-    # UPDATE = temps.read()
-    # users.close()
-
-    set = 'tag'
-    set_name = 'test_tag_1'
-    where = ('username')
-    where_name = (str(user))
-    sql_update(con, set, set_name, where, where_name)
-    await call.message.answer("You are in the user card " + '/' + user + ' and trying to change ' + call.data)
-
-
-@dp.callback_query_handler(text='test_tag_2')
-async def send_random_value(call: types.CallbackQuery):
-    users = open(str(call['from'].id) + "user.txt", "r")
-    user = users.read()
-    users.close()
-
-    print(call.data)
-    # temps = open(str(call['from'].id) + "temp.txt", "r")
-    # UPDATE = temps.read()
-    # users.close()
-
-    set = 'tag'
-    set_name = 'test_tag_2'
-    where = ('username')
-    where_name = (str(user))
-    sql_update(con, set, set_name, where, where_name)
-    await call.message.answer("You are in the user card " + '/' + user + ' and trying to change ' + call.data)
-
-@dp.callback_query_handler(text='test_tag_3')
-async def send_random_value(call: types.CallbackQuery):
-    users = open(str(call['from'].id) + "user.txt", "r")
-    user = users.read()
-    users.close()
-    print(call.data)
-    # temps = open(str(call['from'].id) + "temp.txt", "r")
-    # UPDATE = temps.read()
-    # users.close()
-    set = 'tag'
-    set_name = 'test_tag_3'
-    where = ('username')
-    where_name = (str(user))
-    sql_update(con, set, set_name, where, where_name)
-    await call.message.answer("You are in the user card " + '/' + user + ' and trying to change ' + call.data)
 
 @dp.callback_query_handler(text=[button for button in name_buttons])
 async def send_random_value(call: types.CallbackQuery):
@@ -583,6 +525,7 @@ async def send_random_value(call: types.CallbackQuery):
         where_name = (str(user))
         sql_update(con, set, set_name, where, where_name)
         await call.message.answer("You are in the user card " + '/'+user + ' and trying to change ' + call.data)
+
 
 if __name__ == '__main__':
     executor.start_polling(dp)
