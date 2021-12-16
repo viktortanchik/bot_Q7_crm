@@ -2,7 +2,7 @@ import sqlite3
 
 #con = sqlite3.connect('sqlite_python.db')
 con = sqlite3.connect('bot.sqlite')
-
+#674868256
 
 def crate_super_admin():
     try:
@@ -10,7 +10,8 @@ def crate_super_admin():
         cursor = sqlite_connection.cursor()
         sqlite_create_table_query = ("""CREATE TABLE IF NOT EXISTS super_admin(
                    uid INTEGER PRIMARY KEY AUTOINCREMENT,
-                   user_id TEXT 
+                   user_id TEXT,
+                   user_name TEXT
                    );
                 """)
         print("База данных подключена к SQLite")
@@ -30,7 +31,8 @@ def crate_admin():
         cursor = sqlite_connection.cursor()
         sqlite_create_table_query = ("""CREATE TABLE IF NOT EXISTS admins(
                    uid INTEGER PRIMARY KEY AUTOINCREMENT,
-                   user_id TEXT 
+                   user_id TEXT,
+                   user_name TEXT
                    );
                 """)
         print("База данных подключена к SQLite")
@@ -50,17 +52,18 @@ def crate_db():
         cursor = sqlite_connection.cursor()
         sqlite_create_table_query = ("""CREATE TABLE IF NOT EXISTS users(
                    uid INTEGER PRIMARY KEY AUTOINCREMENT,
-                   chat TEXT ,
-                   user_id TEXT ,
-                   username TEXT ,
                    real_name TEXT ,
+                   username TEXT ,
+                   user_id TEXT ,
+                   chat TEXT ,
                    name_of_agency TEXT ,
                    payid TEXT ,
                    strikes TEXT ,
                    hyperlink TEXT ,
                    tag TEXT ,
                    notes TEXT, 
-                   deposit TEXT
+                   wallet TEXT,
+                   cash_out TEXT
                    );
                 """)
 
@@ -176,10 +179,10 @@ def sql_insert_super_admin(con, entities):
 
 def sql_insert_all(con, entities):
     cursorObj = con.cursor()
-    cursorObj.execute('INSERT INTO users (chat,user_id,username,real_name,name_of_agency,payid,strikes,hyperlink,tag,notes,deposit) VALUES(? ,? ,?, ?, ?,?,?,?,?,?,?)', entities)
+    cursorObj.execute('INSERT INTO users (real_name,username,user_id,chat,name_of_agency,payid,strikes,hyperlink,tag,notes,wallet,cash_out) VALUES(? ,? ,? ,?, ?, ?,?,?,?,?,?,?)', entities)
     con.commit()
 
-test=['chat','user_id','username','real_name','name_of_agency','payid','strikes','hyperlink','tag','notes','deposit']
+test=['chat','user_id','username','real_name','name_of_agency','payid','strikes','hyperlink','tag','notes','deposit','withdraw_money']
 
 #sql_insert_all(con,test)
 def sql_select_original_channel_name(con,id):
