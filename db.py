@@ -205,6 +205,19 @@ def sql_select_id(con,name):
     user = sql_select_original_channel_name(con,values[0])
     return user
 
+def sql_select_chat(con,name):
+    cursorObj = con.cursor()
+    stre =''.join(name)
+    query="SELECT * FROM users WHERE chat = "+ "'" +str(stre) + "'"  # +str(name)
+    #print(query)
+    cursorObj.execute(query)
+    values = cursorObj.fetchone()
+    user = sql_select_original_channel_name(con,values[0])
+    return user
+
+test=['Q7/crm/test/chat_1']
+#print(sql_select_chat(con,test[0]))
+#Q7/crm/test/chat_1
 
 #####
 
