@@ -149,6 +149,10 @@ def get_admins(con):
     for row in all:
         alls.append(row)
     return alls
+# adms= get_admins(con)
+# for i in adms:
+#     print( i[1])
+# print(get_admins(con))
 #print(get_admins(con)[0][1])
 def get_super_admin(con):
     cursorObj = con.cursor()

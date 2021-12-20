@@ -11,6 +11,9 @@ from aiogram.types import ReplyKeyboardRemove, ReplyKeyboardMarkup, KeyboardButt
 import sqlite3
 from db import *
 import asyncio
+from create_chat_02 import create_chat
+#from create_chat.create_01 import create_chat
+#from create_chat import create_01
 #2141799369:AAEhbbxAsNFkfeLs6kU4WYuz4i0O5iCzIyE
 #bot = Bot(token="2141799369:AAEhbbxAsNFkfeLs6kU4WYuz4i0O5iCzIyE")
 
@@ -131,8 +134,8 @@ async def with_puree(message: types.Message):
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
         buttons = ["Find","USER CARD","Settings ⚙"]
         keyboard.add(*buttons)
-        await message.answer("ready for work", reply_markup=keyboard)
-        await message.delete()
+        await message.answer("at your serviсe", reply_markup=keyboard)
+        #await message.delete()
 
 
 equal=['Settings ⚙']
@@ -146,11 +149,30 @@ async def settings(message: types.Message):
         await message.delete()
 
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        buttons = ["Main menu", "ALL ADMIN ⚙", "Add admin 🔧","Add super admin 🛠","Del user 🛠","Del admin 🛠","send_file"]
+        buttons = ["Main menu", "ALL ADMIN ⚙", "Add admin 🔧","Add super admin 🛠","Del user 🛠","Del admin 🛠","send_file","Create_chat"]
         keyboard.add(*buttons)
-        await message.answer("ready for work", reply_markup=keyboard)
-        await message.delete()
+        await message.answer("at your serviсe", reply_markup=keyboard)
 
+
+equal=['Create_chat']
+@dp.message_handler(Text(equals=equal))
+async def settings(message: types.Message):
+    flag = super_admin(message['from'].id)
+    if flag != True:
+        #await message.delete()
+        await message.answer("this chat is not allowed to work with the bot " )
+    else:
+        await message.delete()
+        temps = open(str(message['from'].id) + "temp.txt", "r")
+        UPDATE = temps.read()
+        temps.close()
+        temp = [str(UPDATE)]
+        adms=get_admins(con)
+        len_admins=[]
+        for i in adms:
+            len_admins.append(int(i[1]))
+        await create_chat(temp,len_admins,4)
+        #create_chat(str(temp),)
 
 
 
@@ -168,7 +190,7 @@ async def settings(message: types.Message):
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
         buttons = ["Main menu", "Save admin 🔧"]
         keyboard.add(*buttons)
-        await message.answer("ready for work", reply_markup=keyboard)
+        await message.answer("at your serviсe", reply_markup=keyboard)
 
 
 equal=['Add admin 🔧']
@@ -184,7 +206,7 @@ async def settings(message: types.Message):
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
         buttons = ["Main menu", "Save admin 🔧"]
         keyboard.add(*buttons)
-        await message.answer("ready for work", reply_markup=keyboard)
+        await message.answer("at your serviсe", reply_markup=keyboard)
 
 equal=['Save admin 🔧']
 @dp.message_handler(Text(equals=equal))
@@ -621,7 +643,7 @@ async def with_puree(message: types.Message):
 async def process_start_command(message: types.Message):
     keyboard = types.InlineKeyboardMarkup()
     keyboard.add(types.InlineKeyboardButton(text="Click me", callback_data="wallet"))
-    await message.answer("for viewing the current balance, click on the button", reply_markup=keyboard)
+    await message.answer("let's see your balance", reply_markup=keyboard)
 
 @dp.callback_query_handler(text="wallet")
 async def send_random_value(call: types.CallbackQuery):
@@ -650,7 +672,7 @@ async def with_puree(message: types.Message):
         await message.delete()
         keyboard = types.InlineKeyboardMarkup()
         keyboard.add(types.InlineKeyboardButton(text="Click me", callback_data="CARD"))
-        await message.answer("To receive a user card, click on the button", reply_markup=keyboard)
+        await message.answer("let's see your balance", reply_markup=keyboard)
 
 @dp.callback_query_handler(text="CARD")
 async def send_random_value(call: types.CallbackQuery):
@@ -939,8 +961,8 @@ async def process_start_command(message: types.Message):
     getchat = await bot.get_chat(message.chat.id)
     print(getchat.title)
 
-    chat = await bot.get_chat_member(message.chat.id,message['from'].id)
-    print(chat)
+    #chat = await bot.get_chat_member(message.chat.id,message['from'].id)
+    #print(chat)
     # for i in chat:
     #     print(i)
     # admi = await bot.get_chat_administrators(-654979481)
@@ -955,26 +977,30 @@ async def process_start_command(message: types.Message):
         file = open(str(message['from'].id) + "temp.txt", "w")
         file.write(str(message.text))
         file.close()
+        #member = await bot.get_chat_member(message.chat.id, message.from_user.id)
+        #print(bot.send_message(1300980828,"test"))
+#1300980828
         # users = all_users()
         # if message.text in users:
-        card = sql_select_chat(con, getchat.title)
-
-        if getchat.title in card[4]:
-            print(getchat.title)
-            s1 = re.sub("[/]", "", card[2])
-            #print(message['from'].id)
-            #print('s1 >> ',s1)
-            file = open(str(message['from'].id)+"user.txt", "w")
-            file.write(s1)
-            file.close()
-            #card = sql_select_id(con,s1)
-            #card = sql_select_chat(con,getchat.title)
-            print(card)
-            buttons =[]
-            if float(card[11])>=0:
-                deposit = 'balance   '
-            else:
-                deposit = 'credit   '
+        ##################
+        # card = sql_select_chat(con, getchat.title)
+        #
+        # if getchat.title in card[4]:
+        #     print(getchat.title)
+        #     s1 = re.sub("[/]", "", card[2])
+        #     #print(message['from'].id)
+        #     #print('s1 >> ',s1)
+        #     file = open(str(message['from'].id)+"user.txt", "w")
+        #     file.write(s1)
+        #     file.close()
+        #     #card = sql_select_id(con,s1)
+        #     #card = sql_select_chat(con,getchat.title)
+        #     print(card)
+        #     buttons =[]
+        #     if float(card[11])>=0:
+        #         deposit = 'balance   '
+        #     else:
+        #         deposit = 'credit   '
     #await message.delete()
             #await message.answer("User card     "+s1+'\n'+'real_name    '+card[1]+ '\n'+'username    '+card[2]+'\n'+'user_id        '+card[3]+'\n'+'chat             '+card[4]+'\n'+'agency        '+card[5]+ '\n'+'payid        '+card[6]+'\n'+'strikes       '+card[7]+'\n'+'hyperlink   '+card[8]+'\n'+'tag       '+card[9]+'\n'+ 'notes    '+card[10]+'\n'+deposit +str(card[11])+'\n'+'cash_out     '+card[12]) # test_pots_pip  -1001600149738   # test_chat -1001392919876
 
