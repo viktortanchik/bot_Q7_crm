@@ -46,9 +46,9 @@ from datetime import date, datetime
 
 #['@Ihortihor',674868256]
 
-chat_name='test_Q7_create_chat_01'
+chat_name='test_Q7_create_chat_02'
 admin_id=[674868256]#['@Ihortihor',674868256]
-account=4
+account=1
 x = account
 
 
@@ -76,26 +76,26 @@ async def handler(event):
     print(event)
     #await event.respond('Hey!')
 
-client.run_until_disconnected()
-
-# chat_name='My awesome title_05'
-results = client(functions.messages.CreateChatRequest(
-    users=admin_id,
-    title=chat_name
-))
-# print(results)
-# print(results.chats[0].id)
-# time.sleep(1)
-# client.send_message(results.chats[0].id, 'Hello! Talking to you from Telethon')
-chat_id= int(results.chats[0].id)
-#557620350
-result = client(functions.messages.EditChatAdminRequest(
-    chat_id=chat_id,
-    user_id=admin_id,  # '@Ihortihor',
-    is_admin=True
-))
-print(result)
-print(result.stringify())
+# client.run_until_disconnected()
+#
+# # chat_name='My awesome title_05'
+# results = client(functions.messages.CreateChatRequest(
+#     users=admin_id,
+#     title=chat_name
+# ))
+# # print(results)
+# # print(results.chats[0].id)
+# # time.sleep(1)
+# # client.send_message(results.chats[0].id, 'Hello! Talking to you from Telethon')
+# chat_id= int(results.chats[0].id)
+# #557620350
+# result = client(functions.messages.EditChatAdminRequest(
+#     chat_id=chat_id,
+#     user_id=admin_id,  # '@Ihortihor',
+#     is_admin=True
+# ))
+# print(result)
+# print(result.stringify())
 client.run_until_disconnected()
 
 def create_chat(chat_name,admin_id,account):

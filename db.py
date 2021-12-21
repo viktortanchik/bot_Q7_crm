@@ -142,6 +142,8 @@ def get_all(con):
         alls.append(row)
     return alls
 
+#print(get_all(con))
+
 def get_admins(con):
     cursorObj = con.cursor()
     all =cursorObj.execute("SELECT * FROM admins")
@@ -209,6 +211,16 @@ def sql_select_id(con,name):
     user = sql_select_original_channel_name(con,values[0])
     return user
 
+def sql_select_tag(con,name):
+    cursorObj = con.cursor()
+    stre =''.join(name)
+    query="SELECT * FROM users WHERE tag = "+ "'" +str(stre) + "'"  # +str(name)
+    #print(query)
+    cursorObj.execute(query)
+    values = cursorObj.fetchone()
+    user = sql_select_original_channel_name(con,values[0])
+    return user
+#print(sql_select_tag(con,'bonus'))
 def sql_select_chat(con,name):
     cursorObj = con.cursor()
     stre =''.join(name)

@@ -21,7 +21,7 @@ account=4
 async def create_chat(chat_name,admin_id,account):
     print("chat_name>>",chat_name)
     print("admin_id>>",admin_id)
-    x = 4
+    x = account
     db = sqlite3.connect('Account.db')
     cur = db.cursor()
     print(cur)
@@ -45,7 +45,7 @@ async def create_chat(chat_name,admin_id,account):
     #use=[674868256]
     results = await client(functions.messages.CreateChatRequest(
         users=admin_id,
-        title=chat_name[0]
+        title=str(chat_name[0])
     ))
     print(results)
     #print(results.chats[0].id)
@@ -61,37 +61,5 @@ async def create_chat(chat_name,admin_id,account):
             is_admin=True
         ))
         print(result)
-    #print(result.stringify())
-    #client.run_until_disconnected()
-
-#
 
 
-#
-# #
-# x = 4
-# db = sqlite3.connect('Account.db')
-# cur = db.cursor()
-# cur.execute(f"SELECT PHONE FROM Account WHERE ID = '{x}'")
-# time.sleep(0.4)
-# Phone = str(cur.fetchone()[0])
-# print("Входим в аккаунт: " + Phone, ' Номер ', x)
-# cur.execute(f"SELECT API_ID FROM Account WHERE ID = '{x}'")
-# time.sleep(0.4)
-# api_id = str(cur.fetchone()[0])
-# cur.execute(f"SELECT API_HASH FROM Account WHERE ID = '{x}'")
-# time.sleep(0.4)
-# api_hash = str(cur.fetchone()[0])
-# session = str("anon" + str(x))
-# client = TelegramClient(session, api_id, api_hash)
-# client.start()
-# x += 1
-# time.sleep(1)
-#
-# @client.on(events.NewMessage())
-# async def handler(event):
-#     print(event)
-#
-# client.run_until_disconnected()
-
-#create_chat(chat_name,admin_id,account)

@@ -15,9 +15,9 @@ from create_chat_02 import create_chat
 #from create_chat.create_01 import create_chat
 #from create_chat import create_01
 #2141799369:AAEhbbxAsNFkfeLs6kU4WYuz4i0O5iCzIyE
-#bot = Bot(token="2141799369:AAEhbbxAsNFkfeLs6kU4WYuz4i0O5iCzIyE")
+bot = Bot(token="2141799369:AAEhbbxAsNFkfeLs6kU4WYuz4i0O5iCzIyE")
 
-bot = Bot(token="5049839636:AAGU4R4Ibn-qwonYWMBfFWHfU0xM6LubqFA")
+#bot = Bot(token="5049839636:AAGU4R4Ibn-qwonYWMBfFWHfU0xM6LubqFA")
 dp = Dispatcher(bot)
 con = sqlite3.connect('bot.sqlite')
 import re
@@ -108,13 +108,8 @@ async def process_start_command(message: types.Message):
         keyboard.add(*buttons)
         #await message.answer(".", reply_markup=keyboard)
         await message.delete()
-        time.sleep(1)
-        #await bot.send_message(674868256, "Hey!\n added new user\n Chat "+message.chat.title+'\n username '+message['from'].username)
-        await bot.send_message(message.chat.id,'start bot', reply_markup=keyboard)
-        await bot.send_message(674868256,
-                               "Hey!\n added new user\n Chat " + '\n username ' + message[
-                                   'from'].username)
-
+        time.sleep(3)
+        await bot.send_message(message.chat.id,'at your serviсe', reply_markup=keyboard)
 
         #await message.delete()
 
@@ -137,11 +132,7 @@ async def with_puree(message: types.Message):
         await message.delete()
 
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        #buttons = ["Find","USER CARD","Settings ⚙"]
-        #buttons = ["CARD",'wallet_','Change_info',"Settings ⚙"]
-        buttons = ["CARD",'Change_balance ','Change_info',"Settings ⚙"]
-
-
+        buttons = ["Find","USER CARD","Settings ⚙"]
         keyboard.add(*buttons)
         await message.answer("at your serviсe", reply_markup=keyboard)
         #await message.delete()
@@ -177,10 +168,10 @@ async def settings(message: types.Message):
         temps.close()
         temp = [str(UPDATE)]
         adms=get_admins(con)
-        len_admins=['@Q7CRM_test_bot']
+        len_admins=[]
         for i in adms:
             len_admins.append(int(i[1]))
-        await create_chat(temp,len_admins,1)
+        await create_chat(temp,len_admins,4)
         #create_chat(str(temp),)
 
 
@@ -632,38 +623,6 @@ async def find_deposit(message: types.Message):
             await message.answer("Search did not return any result ❌")
         else:
             await message.answer("cash_out 🔎 " + mes)
-#
-# genelamain =["USER CARD"]
-# @dp.message_handler(Text(equals=genelamain))
-# async def with_puree(message: types.Message):
-#     flag = admins(message['from'].id)
-#     if flag != True:
-#         #await message.delete()
-#         await message.answer("this chat is not allowed to work with the bot " )
-#     else:
-#         await message.delete()
-#         #print()
-#         getchat = await bot.get_chat(message.chat.id)
-#         print(getchat.title)
-#         card = sql_select_chat(con, getchat.title)
-#         s1 = re.sub("[/]", "", card[2])
-#         if float(card[11]) >= 0:
-#             deposit = 'balance   '
-#         else:
-#             deposit = 'credit'
-#         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=False)
-#         buttons = ["Main menu","CARD", 'wallet_','real_name', 'username', 'user_id', 'chat_', 'agency_', 'payid_', 'strikes_', 'hyperlink_',
-#                         'tag_', 'notes_', 'cash_out_']
-#
-#
-#         butt= "User card " + s1 + '\n' + 'real_name ' + card[1] + '\n' + 'username ' + card[2] + '\n' + 'user_id ' + card[3] + '\n' + 'chat ' + card[4] + '\n' + 'agency ' +card[5] + '\n' + 'payid ' + card[6] + '\n' + 'strikes ' + card[
-#                                  7] + '\n' + 'hyperlink ' + card[8] + '\n' + 'tag ' + card[
-#                                  9] + '\n' + 'notes ' + card[10] + '\n' + deposit + str(
-#             card[11]) + '\n' + 'cash_out     ' + card[12]
-#         keyboard.add(*buttons)
-#         #
-#         await message.answer("User card", reply_markup=keyboard)  # test_pots_pip  -1001600149738   # test_chat -1001392919876
-#         #await message.answer("ready for work", reply_markup=keyboard)
 
 genelamain =["USER CARD"]
 @dp.message_handler(Text(equals=genelamain))
@@ -685,7 +644,7 @@ async def with_puree(message: types.Message):
             deposit = 'credit'
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=False)
         # Change info
-        buttons = ["Main menu","CARD",'Change_info','Change_balance']
+        buttons = ["Main menu","CARD",'Change_info']
 
 
         butt= "User card " + s1 + '\n' + 'real_name ' + card[1] + '\n' + 'username ' + card[2] + '\n' + 'user_id ' + card[3] + '\n' + 'chat ' + card[4] + '\n' + 'agency ' +card[5] + '\n' + 'payid ' + card[6] + '\n' + 'strikes ' + card[
@@ -716,9 +675,9 @@ async def with_puree(message: types.Message):
             deposit = 'credit'
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=False)
         # Change info
-        buttons = ["Main menu", "CARD", 'Change_balance','real_name', 'username', 'user_id', 'chat_', 'agency_', 'payid_', 'strikes_',
+        buttons = ["Main menu", "CARD", 'real_name', 'username', 'user_id', 'chat_', 'agency_', 'payid_', 'strikes_',
                    'hyperlink_',
-                   'tag_', 'notes_',  'cash_out_']
+                   'tag_', 'notes_', 'wallet_', 'cash_out_']
 
         butt = "User card " + s1 + '\n' + 'real_name ' + card[1] + '\n' + 'username ' + card[2] + '\n' + 'user_id ' + \
                card[3] + '\n' + 'chat ' + card[4] + '\n' + 'agency ' + card[5] + '\n' + 'payid ' + card[
@@ -764,7 +723,7 @@ async def with_puree(message: types.Message):
         await message.delete()
         keyboard = types.InlineKeyboardMarkup()
         keyboard.add(types.InlineKeyboardButton(text="Click me", callback_data="CARD"))
-        await message.answer("User card", reply_markup=keyboard)
+        await message.answer("let's see your balance", reply_markup=keyboard)
 
 @dp.callback_query_handler(text="CARD")
 async def send_random_value(call: types.CallbackQuery):
@@ -1022,8 +981,7 @@ async def with_puree(message: types.Message):
         sql_update(con, set, set_name, where, where_name)
         await message.answer("You are in the user card " + '/' + user + ' and trying to change cash_out')
 
-
-@dp.message_handler(Text(equals='Change_balance'))
+@dp.message_handler(Text(equals='wallet_'))
 async def with_puree(message: types.Message):
     flag = admins(message['from'].id)
     if flag != True:
@@ -1048,34 +1006,7 @@ async def with_puree(message: types.Message):
         sql_update(con, set, set_name, where, where_name)
         #await message.answer("You are in the user card " + '/' + user + ' and trying to change wallet')
 
-@dp.message_handler(commands='spam')
-async def process_start_command(message: types.Message):
-    flag = admins(message['from'].id)
-    if flag!=True:
-        #await message.delete()
-        await message.answer("this chat is not allowed to work with the bot " )
-        print(message)
-        print(message['from'].username)
-    else:
-        #print(await bot.copy_message(message['from'].id))
-        print(message)
 
-        bonus = sql_select_tag(con,'bonus')
-        #@Ihortihor
-        #397656673
-        #await bot.get_chat('Max/123456/q7')
-        print(await bot.get_chat())
-        #await bot.forward_message('Ihortihor', message.from_user.id, (int(message.message_id) -1))
-
-
-@dp.message_handler(content_types=['photo'])
-async def handle_docs_photo(message):
-    print("Photo>>",message)
-    #await bot.send_message(397656673,(await message.reply('test')))
-    #await message.answer(message.reply('test'),397656673)
-    #await message.forward_message(message.reply('spam',397656673))
-    #674868256
-    #await bot.forward_message(397656673, message.from_user.id, message.message_id)
 
 
 
@@ -1083,7 +1014,7 @@ async def handle_docs_photo(message):
 async def process_start_command(message: types.Message):
     print("message>>>>", message)
     getchat = await bot.get_chat(message.chat.id)
-    print("getchat.title>>",getchat.title)
+    print(getchat.title)
 
     #chat = await bot.get_chat_member(message.chat.id,message['from'].id)
     #print(chat)
@@ -1101,19 +1032,6 @@ async def process_start_command(message: types.Message):
         file = open(str(message['from'].id) + "temp.txt", "w")
         file.write(str(message.text))
         file.close()
-        card = sql_select_chat(con, getchat.title)
-        print("card>>",card)
-        if getchat.title in card[4]:
-            print(getchat.title)
-            s1 = re.sub("[/]", "", card[2])
-            #print(message['from'].id)
-            #print('s1 >> ',s1)
-            file = open(str(message['from'].id)+"user.txt", "w")
-            file.write(s1)
-            file.close()
-            #card = sql_select_id(con,s1)
-            #card = sql_select_chat(con,getchat.title)
-            print("change_user")
         #member = await bot.get_chat_member(message.chat.id, message.from_user.id)
         #print(bot.send_message(1300980828,"test"))
 #1300980828
