@@ -24,6 +24,30 @@ def crate_super_admin():
         if (sqlite_connection):
             sqlite_connection.close()
             print("Соединение с SQLite закрыто")
+
+
+def crate_chat_info():
+    try:
+        sqlite_connection = sqlite3.connect('bot.sqlite')
+        cursor = sqlite_connection.cursor()
+        sqlite_create_table_query = ("""CREATE TABLE IF NOT EXISTS chat_info(
+                   uid INTEGER PRIMARY KEY AUTOINCREMENT,
+                   chat_id TEXT,
+                   chat_name TEXT
+                   );
+                """)
+        print("База данных подключена к SQLite")
+        cursor.execute(sqlite_create_table_query)
+        sqlite_connection.commit()
+        cursor.close()
+    except sqlite3.Error as error:
+        print("Ошибка при подключении к sqlite", error)
+    finally:
+        if (sqlite_connection):
+            sqlite_connection.close()
+            print("Соединение с SQLite закрыто")
+
+#crate_chat_info()
 #crate_super_admin()
 def crate_admin():
     try:
@@ -86,15 +110,19 @@ def crate_db():
 def delete_user(con,name):
     cursor = con.cursor()
     stre = ''.join(name)
-    query="SELECT * FROM users WHERE user_id = "+ "'" +str(stre) + "'"  # +str(name)
+    query="SELECT * FROM users WHERE username = "+ "'" +str(stre) + "'"  # +str(name)
     cursor.execute(query)
     con.commit()
     values = cursor.fetchone()
+    #cursor = con.cursor()
     print(values[0])
-    cursor.execute('DELETE from users where uid =(? )', str(values[0]))
+    query="DELETE from users where uid = "+"'"+ str(values[0])+"'"
+
+    cursor.execute(query)
     #print(cursor)
     con.commit()
-
+#test_name_5
+#print(delete_user(con,'test_name_5'))
 def delete_admin(con,name):
     cursor = con.cursor()
     stre = ''.join(name)
@@ -103,7 +131,9 @@ def delete_admin(con,name):
     con.commit()
     values = cursor.fetchone()
     print(values[0])
-    cursor.execute('DELETE from admins where uid =(? )', str(values[0]))
+    #cursor.execute('DELETE from admins where uid =(? )', str(values[0]))
+    query = "DELETE from admins where uid = " + "'" + str(values[0]) + "'"
+    cursor.execute(query)
     #print(cursor)
     con.commit()
 #temps=['test_names']
@@ -154,8 +184,9 @@ def get_admins(con):
 # adms= get_admins(con)
 # for i in adms:
 #     print( i[1])
-# print(get_admins(con))
-#print(get_admins(con)[0][1])
+#print(get_admins(con))
+#print(get_admins(con))
+
 def get_super_admin(con):
     cursorObj = con.cursor()
     all =cursorObj.execute("SELECT * FROM super_admin")
@@ -178,11 +209,15 @@ def sql_insert_super_admin(con, entities):
     cursorObj = con.cursor()
     cursorObj.execute('INSERT INTO super_admin (user_id) VALUES(? )', entities)
     con.commit()
-
+#chat_info
 # test_super_admins=['4321']
 # sql_insert_super_admin(con,test_super_admins)
-
-
+def sql_insert_chat_info(con, entities):
+    cursorObj = con.cursor()
+    cursorObj.execute('INSERT INTO chat_info (chat_id,chat_name) VALUES(?,? )', entities)
+    con.commit()
+#id_name=[123456,'test_01']
+#sql_insert_chat_info(con,id_name)
 def sql_insert_all(con, entities):
     cursorObj = con.cursor()
     cursorObj.execute('INSERT INTO users (real_name,username,user_id,chat,name_of_agency,payid,strikes,hyperlink,tag,notes,wallet,cash_out) VALUES(? ,? ,? ,?, ?, ?,?,?,?,?,?,?)', entities)
@@ -217,10 +252,33 @@ def sql_select_tag(con,name):
     query="SELECT * FROM users WHERE tag = "+ "'" +str(stre) + "'"  # +str(name)
     #print(query)
     cursorObj.execute(query)
-    values = cursorObj.fetchone()
-    user = sql_select_original_channel_name(con,values[0])
-    return user
+    values = cursorObj.fetchall()
+    #print(values)
+    #print(len(values))
+    chat=[]
+    for i in values:
+        #print(i)
+        chat.append(i[4])
+    return chat
 #print(sql_select_tag(con,'bonus'))
+
+def sql_select_chat_info(con,name):
+    cursorObj = con.cursor()
+    stre =''.join(name)
+    query="SELECT * FROM chat_info WHERE chat_name = "+ "'" +str(stre) + "'"  # +str(name)
+    #print(query)
+    cursorObj.execute(query)
+    values = cursorObj.fetchall()
+    #print(values)
+    #print(len(values))
+    chat=[]
+    for i in values:
+        #print(i)
+        chat.append(i[1])
+    return chat
+#chat_name =['Max/123456/q7/test_1', 'Max/123456/q7/test_3']
+#print(sql_select_chat_info(con,chat_name[1]))
+
 def sql_select_chat(con,name):
     cursorObj = con.cursor()
     stre =''.join(name)

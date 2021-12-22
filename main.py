@@ -89,7 +89,9 @@ async def on_user_joined(message: types.Message):
     if flag_admin==True:
         data =['real_name',str(message['from'].username),'user_id',str(message.chat.title),'name_of_agency','payid','strikes','hyperlink','tag','notes','0',"cash_out"]
         sql_insert_all(con,data)
-        await bot.send_message(674868256, "Hey!\n added new user\n Chat "+message.chat.title+'\n username '+message['from'].username)
+        adms = get_admins(con)
+        for i in adms:
+            await bot.send_message(int(i[1]), "Hey!\n added new user\n Chat "+message.chat.title+'\n username '+message['from'].username)
     #rowsget_all(con)
     #await message.reply("Привет!\n добавлен новый пользователь ")
 
@@ -111,7 +113,11 @@ async def process_start_command(message: types.Message):
         time.sleep(1)
         #await bot.send_message(674868256, "Hey!\n added new user\n Chat "+message.chat.title+'\n username '+message['from'].username)
         await bot.send_message(message.chat.id,'start bot', reply_markup=keyboard)
-        await bot.send_message(674868256,
+        adms = get_admins(con)
+
+        for i in adms:
+
+            await bot.send_message(int(i[1]),
                                "Hey!\n added new user\n Chat " + '\n username ' + message[
                                    'from'].username)
 
@@ -158,10 +164,49 @@ async def settings(message: types.Message):
         await message.delete()
 
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        buttons = ["Main menu", "ALL ADMIN ⚙", "Add admin 🔧","Add super admin 🛠","Del user 🛠","Del admin 🛠","send_file","Create_chat"]
+        buttons = ["Main menu", "ALL ADMIN ⚙", "Add admin 🔧","Del user 🛠","Del admin 🛠","send_file","Create_chat","send_week","Find"]
         keyboard.add(*buttons)
         await message.answer("at your serviсe", reply_markup=keyboard)
 
+@dp.message_handler(Text(equals="Del user 🛠"))
+async def find_chat(message: types.Message):
+    flag = admins(message['from'].id)
+    if flag != True:
+        #await message.delete()
+        await message.answer("this chat is not allowed to work with the bot " )
+    else:
+        chat_find = await find_all()
+        #print(chat_find)
+        temps = open(str(message['from'].id) + "temp.txt", "r")
+        UPDATE = temps.read()
+        temps.close()
+        print("USER_DELL>>",UPDATE)
+        temp = [str(UPDATE)]
+        delete_user(con,temp)
+        keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        buttons = ["Main menu"]
+        keyboard.add(*buttons)
+        await message.answer("at your serviсe", reply_markup=keyboard)
+
+@dp.message_handler(Text(equals="Del admin 🛠"))
+async def find_chat(message: types.Message):
+    flag = admins(message['from'].id)
+    if flag != True:
+        #await message.delete()
+        await message.answer("this chat is not allowed to work with the bot " )
+    else:
+        chat_find = await find_all()
+        #print(chat_find)
+        temps = open(str(message['from'].id) + "temp.txt", "r")
+        UPDATE = temps.read()
+        temps.close()
+        print("USER_DELL>>",UPDATE)
+        temp = [str(UPDATE)]
+        delete_admin(con,temp)
+        keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        buttons = ["Main menu"]
+        keyboard.add(*buttons)
+        await message.answer("at your serviсe", reply_markup=keyboard)
 
 equal=['Create_chat']
 @dp.message_handler(Text(equals=equal))
@@ -185,6 +230,20 @@ async def settings(message: types.Message):
 
 
 
+equal=['send_week']
+@dp.message_handler(Text(equals=equal))
+async def settings(message: types.Message):
+    flag = super_admin(message['from'].id)
+    if flag != True:
+        #await message.delete()
+        await message.answer("this chat is not allowed to work with the bot " )
+    else:
+        await message.reply_document(open("WEEK.csv", "rb"))
+        keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        buttons = ["Main menu"]
+        keyboard.add(*buttons)
+        await message.answer("at your serviсe", reply_markup=keyboard)
+
 equal=['send_file']
 @dp.message_handler(Text(equals=equal))
 async def settings(message: types.Message):
@@ -207,16 +266,11 @@ async def settings(message: types.Message):
             for i in temp_db:
                 print(i[1:])
                 writer.writerow(i[1:])
-        #myFile.close()
-
-        #bot.send_document(chat_id, ('filename.txt', file))
-        #keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
         await message.reply_document(open("db.csv", "rb"))
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
         buttons = ["Main menu"]
         keyboard.add(*buttons)
         await message.answer("at your serviсe", reply_markup=keyboard)
-
 
 equal=['Add admin 🔧']
 @dp.message_handler(Text(equals=equal))
@@ -232,6 +286,40 @@ async def settings(message: types.Message):
         buttons = ["Main menu", "Save admin 🔧"]
         keyboard.add(*buttons)
         await message.answer("at your serviсe", reply_markup=keyboard)
+
+
+######################################################################
+
+equal=['ALL ADMIN ⚙']
+@dp.message_handler(Text(equals=equal))
+async def settings(message: types.Message):
+    flag = super_admin(message['from'].id)
+    if flag != True:
+        #await message.delete()
+        await message.answer("this chat is not allowed to work with the bot " )
+    else:
+        await message.delete()
+        keyboard = types.InlineKeyboardMarkup()
+        keyboard.add(types.InlineKeyboardButton(text="Click me", callback_data="ALLADMIN"))
+        await message.answer("ALL ADMINS", reply_markup=keyboard)
+
+@dp.callback_query_handler(text="ALLADMIN")
+async def send_random_value(call: types.CallbackQuery):
+    flag = admins(call['from'].id)
+    if flag != True:
+        # await message.delete()
+        await call.answer("this chat is not allowed to work with the bot ")
+    else:
+        admi = get_admins(con)
+        mes=''
+        for i in admi:
+            mes += str(i[1])
+            mes += '\n'
+        await call.answer(text=mes, show_alert=True)
+        await call.message.delete()
+    # или просто await call.answer()
+
+#######################################################################
 
 equal=['Save admin 🔧']
 @dp.message_handler(Text(equals=equal))
@@ -249,33 +337,45 @@ async def settings(message: types.Message):
         temp=[str(UPDATE)]
         print("SAVE_ADMIN>>>",temp)
         sql_insert_admins(con,temp)
+        sql_insert_super_admin(con,temp)
         await message.answer("SAVE_ADMIN")
+#
+######################################################################
 
 equal=['ALL USER']
 @dp.message_handler(Text(equals=equal))
-async def with_puree(message: types.Message):
-    flag = admins(message['from'].id)
+async def settings(message: types.Message):
+    flag = super_admin(message['from'].id)
     if flag != True:
         #await message.delete()
         await message.answer("this chat is not allowed to work with the bot " )
     else:
         await message.delete()
+        keyboard = types.InlineKeyboardMarkup()
+        keyboard.add(types.InlineKeyboardButton(text="Click me", callback_data="ALLUSER"))
+        await message.answer("ALL USER", reply_markup=keyboard)
 
-        keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        buttons = ["Main menu"]
-        keyboard.add(*buttons)
-        rows= get_all(con)
-        print('rows>>',rows)
-        mes=''
-        for row in range (len(rows)):
+@dp.callback_query_handler(text="ALLUSER")
+async def send_random_value(call: types.CallbackQuery):
+    flag = admins(call['from'].id)
+    if flag != True:
+        # await message.delete()
+        await call.answer("this chat is not allowed to work with the bot ")
+    else:
+        rows = get_all(con)
+        print('rows>>', rows)
+        mes = ''
+        for row in range(len(rows)):
             mes += ' /'
             print(rows[row])
-            mes+=str(rows[row][2])
+            mes += str(rows[row][2])
             newrows.append(rows[row][2])
             print('newrows >> ', newrows)
-            #mes+=' /'cxvbcvxxb
-        dp.message_handler(commands=[newrows[row] for row in range(len(newrows))])
-        await message.answer(mes, reply_markup=keyboard)
+        await call.answer(text=mes, show_alert=True)
+        await call.message.delete()
+    # или просто await call.answer()
+
+#######################################################################
 
 @dp.message_handler(Text(equals="Find"))
 async def with_puree(message: types.Message):
@@ -286,8 +386,8 @@ async def with_puree(message: types.Message):
     else:
         await message.delete()
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        buttons = ['real_name 🔎','username 🔎','user_id 🔎','chat 🔎', 'name_of_agency 🔎', 'payid 🔎', 'strikes 🔎', 'hyperlink 🔎',
-                        'tag 🔎', 'notes 🔎', 'wallet 🔎','cash_out 🔎',"Main menu"]
+        buttons = ["Main menu",'real_name 🔎','username 🔎','user_id 🔎','chat 🔎',  'payid 🔎', 'strikes 🔎',
+                        'tag 🔎', 'notes 🔎', 'wallet 🔎','cash_out 🔎']
         keyboard.add(*buttons)
         await message.answer("Find ", reply_markup=keyboard)
 
@@ -716,9 +816,14 @@ async def with_puree(message: types.Message):
             deposit = 'credit'
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=False)
         # Change info
-        buttons = ["Main menu", "CARD", 'Change_balance','real_name', 'username', 'user_id', 'chat_', 'agency_', 'payid_', 'strikes_',
-                   'hyperlink_',
+        buttons = ["Main menu", "CARD",  'username', 'user_id',   'payid_', 'strikes_',
+
                    'tag_', 'notes_',  'cash_out_']
+        """
+        buttons = ["Main menu", "CARD", 'Change_balance', 'real_name', 'username', 'user_id', 'chat_', 'agency_',
+                   'payid_', 'strikes_',
+                   'hyperlink_',
+                   'tag_', 'notes_', 'cash_out_']"""
 
         butt = "User card " + s1 + '\n' + 'real_name ' + card[1] + '\n' + 'username ' + card[2] + '\n' + 'user_id ' + \
                card[3] + '\n' + 'chat ' + card[4] + '\n' + 'agency ' + card[5] + '\n' + 'payid ' + card[
@@ -778,10 +883,10 @@ async def send_random_value(call: types.CallbackQuery):
         card = sql_select_chat(con, getchat.title)
         s1 = re.sub("[/]", "", card[2])
         if float(card[11]) >= 0:
-            deposit = 'balance   '
+            deposit = 'balance:   '
         else:
-            deposit = 'credit'
-        butt ='username ' + card[2] +  '\n' + 'chat ' + card[4] + '\n' + 'agency ' + card[5] + '\n' + 'payid ' + card[6] + '\n' + 'strikes ' + card[7] + '\n' + 'google.com ' + card[8] + '\n' + 'tag ' + card[9] + '\n' + 'notes ' + card[10] + '\n' + deposit + str(card[11]) + '\n' + 'cash_out     ' + card[12]
+            deposit = 'credit:   '
+        butt ='username: ' + card[2] +  '\n' + 'user_id '+card[2] + '\n' + 'payid: ' + card[6] + '\n' + 'strikes: ' + card[7] + '\n' + 'tag: ' + card[9] + '\n' + 'notes: ' + card[10] + '\n' + deposit + str(card[11]) + '\n' + 'cash_out:     ' + card[12] + '\n' +"last week's balance   "+card[5]
         #print("call>>",call.message.chat.id)
         print(len(butt))
         await call.answer(text=butt, show_alert=True)
@@ -1039,13 +1144,16 @@ async def with_puree(message: types.Message):
         users.close()
         set = 'wallet'
         balans = sql_select_id(con, user)
-
-        UPDATE = float(balans[11]) + float(UPDATE)
-
-        set_name = (str(UPDATE))
-        where = ('username')
-        where_name = (str(user))
-        sql_update(con, set, set_name, where, where_name)
+        checkdb = balans[9]
+        print("checkdb >>",checkdb)
+        if (checkdb=='no credit') and ((float(balans[11]) + float(UPDATE))<0):
+            await message.answer("no credit")
+        else:
+            UPDATE = float(balans[11]) + float(UPDATE)
+            set_name = (str(UPDATE))
+            where = ('username')
+            where_name = (str(user))
+            sql_update(con, set, set_name, where, where_name)
         #await message.answer("You are in the user card " + '/' + user + ' and trying to change wallet')
 
 @dp.message_handler(commands='spam')
@@ -1057,20 +1165,43 @@ async def process_start_command(message: types.Message):
         print(message)
         print(message['from'].username)
     else:
+        post = open(str(message['from'].id) + "spam.txt", "r")
+        spam_id = post.read()
+        post.close()
         #print(await bot.copy_message(message['from'].id))
-        print(message)
-
+        #print(message)
+        chat_id=[]
+        message_id= (int(message.message_id) -1)
         bonus = sql_select_tag(con,'bonus')
+        for i in bonus:
+            print("BONUS CHAT NAME >>",i)
+            id = sql_select_chat_info(con, i)
+            print("id>>>>",id[0])
+            chat_id.append(id)
+            await bot.forward_message(str(id[0]), message.from_user.id, int(spam_id))
+        #await bot.send_message(782187872, (int(message.message_id) - 1))
+
+
+        print("chat_id IN DB >>>",chat_id)
+
         #@Ihortihor
         #397656673
         #await bot.get_chat('Max/123456/q7')
-        print(await bot.get_chat())
-        #await bot.forward_message('Ihortihor', message.from_user.id, (int(message.message_id) -1))
+        #print(await bot.get_chat())
+        #await bot.forward_message('Ihortihor', message.from_user.id, message_id)
 
 
 @dp.message_handler(content_types=['photo'])
 async def handle_docs_photo(message):
     print("Photo>>",message)
+    flag = admins(message['from'].id)
+    if flag != True:
+        pass
+    else:
+        # await message.delete()
+        file = open(str(message['from'].id) + "spam.txt", "w")
+        file.write(str(message.message_id))
+        file.close()
     #await bot.send_message(397656673,(await message.reply('test')))
     #await message.answer(message.reply('test'),397656673)
     #await message.forward_message(message.reply('spam',397656673))

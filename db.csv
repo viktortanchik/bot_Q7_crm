@@ -1,4 +1,7 @@
 real_name,username,user_id,chat,agency,payid,strikes,hyperlink,tag,notes,wallet,cash_out
-real_name,stasgrin01,95,Max/123456/q7,name_of_agency,payid,strikes,hyperlink,bonus,notes,95,cash_out
-test_1,test_1,test_1,test_1,test_1,test_1,test_1,test_1,test_1,test_1,0,test_1
-real_name,milancholiac,user_id,SA/MailanMilan/123456/Q7,name_of_agency,payid,strikes,hyperlink,tag,bonus,80.0,cash_out
+real_name,milancholiac,user_id,SA/MailanMilan/123456/Q7,1234,payid,strikes,hyperlink,tag,notes,0,cash_out
+real_name,test_name_1,id,Max/123456/q7/test_1,423,payid,strikes,hyperlink,bonus,notes,0,cash_out
+real_name,test_name_2,id,Max/123456/q7/test_2,324,payid,strikes,hyperlink,tag,notes,0,cash_out
+real_name,test_name_3,id,Max/123456/q7/test_3,4321,payid,payid,hyperlink,no credit,50,0,cash_out
+real_name,test_name_4,где это,Max/123456/q7/test_4,45,123,strikes,hyperlink,bonus,want ,148.0,cash_out
+real_name,newplayerforQ7,user_id,QA/IhorNew/456789/Q7,name_of_agency,payid,strikes,hyperlink,bonus,notes,80.0,cash_out
